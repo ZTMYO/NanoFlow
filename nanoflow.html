@@ -1,0 +1,532 @@
+<!--
+    _   __                           ______    __                 
+   / | / /  ____ _   ____   ____    / ____/   / /  ____  _      __
+  /  |/ /  / __ `/  / __ \ / __ \  / /_      / /  / __ \| | /| / /
+ / /|  /  / /_/ /  / / / // /_/ / / __/     / /  / /_/ /| |/ |/ / 
+/_/ |_/   \__,_/  /_/ /_/ \____/ /_/       /_/   \____/ |__/|__/  
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1">
+    <title>NanoFlow</title>
+    <link rel="icon" href="NanoImg/title_logo.png">
+    <link rel="stylesheet" href="nanoflow.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-title">
+            <img id="navLogo" class="nav-logo" src="NanoImg/logo_b.png" alt="logo" height="32">
+        </div>
+        <div class="nav-center">
+            <button id="textGenBtn" class="desktop-only">文字生成</button>
+            <button id="imgGenBtn" class="desktop-only">图片生成</button>
+            <button id="exportBtn" class="desktop-only" title='导出点阵图'>导出</button>
+            <div class="color-group desktop-only" style="display:flex;align-items:center;gap:6px;">
+                <label class="theme-color-label" for="colorCirclePreview">颜色</label>
+                <div id="colorCirclePreview" title="设置颜色" tabindex="0"></div>
+            </div>
+            <div class="slider-control-group desktop-only">
+                <span class="zoom-label">密度</span>
+                <input type="range" id="densitySlider" min="1" max="8" step="1" value="4">
+                <span class="slider-value" id="densityValue">4</span>
+            </div>
+            <div class="slider-control-group desktop-only">
+                <span class="zoom-label">缩放</span>
+                <input type="range" id="zoomSlider" min="0.5" max="3" step="0.01" value="2.00">
+                <span class="slider-value" id="zoomValue">2.00</span>
+            </div>
+            <div class="slider-control-group desktop-only">
+                <span class="zoom-label">弹性系数</span>
+                <input type="range" id="elasticitySlider" min="1" max="100" step="1" value="40">
+                <span class="slider-value" id="elasticityValue">40</span>
+            </div>
+            <div class="slider-control-group desktop-only">
+                <span class="zoom-label">力度</span>
+                <input type="range" id="forceSlider" min="1" max="100" step="1" value="40">
+                <span class="slider-value" id="forceValue">40</span>
+            </div>
+            <div class="effect-group desktop-only" style="display:flex;align-items:center;gap:6px;">
+                <span class="zoom-label">大小</span>
+                <button id="particleSizeToggleBtn" title="粒子大小切换">小</button>
+            </div>
+            <div class="effect-group desktop-only" style="display:flex;align-items:center;gap:6px;">
+                <span class="zoom-label">效果</span>
+                <button id="mouseEffectBtn" title="效果切换">推开</button>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+                <span class="menu-icon"></span>
+            </button>
+            <div class="mobile-menu" id="mobileMenu">
+                <button id="textGenBtnMobile">文字生成</button>
+                <button id="imgGenBtnMobile">图片生成</button>
+                <button id="exportBtnMobile">导出</button>
+                <button id="gradientModalBtnMobile" class="mobile-menu-item">颜色设置</button>
+                <div class="mobile-menu-item slider-item">
+                    <label class="slider-label" for="densitySliderMobile">密度</label>
+                    <input type="range" id="densitySliderMobile" min="1" max="8" step="1" value="4">
+                    <span class="slider-value" id="densityValueMobile">4</span>
+                </div>
+                <div class="mobile-menu-item slider-item">
+                    <label class="slider-label" for="zoomSliderMobile">缩放</label>
+                    <input type="range" id="zoomSliderMobile" min="0.5" max="3" step="0.01" value="2.00">
+                    <span class="slider-value" id="zoomValueMobile">2.00</span>
+                </div>
+                <div class="mobile-menu-item slider-item">
+                    <label class="slider-label" for="elasticitySliderMobile">弹性系数</label>
+                    <input type="range" id="elasticitySliderMobile" min="1" max="100" step="1" value="40">
+                    <span class="slider-value" id="elasticityValueMobile">40</span>
+                </div>
+                <div class="mobile-menu-item slider-item">
+                    <label class="slider-label" for="forceSliderMobile">力度</label>
+                    <input type="range" id="forceSliderMobile" min="1" max="100" step="1" value="40">
+                    <span class="slider-value" id="forceValueMobile">40</span>
+                </div>
+                <div class="mobile-menu-item">
+                    <label class="slider-label">大小</label>
+                    <button id="particleSizeToggleBtnMobile">小</button>
+                </div>
+                <div class="mobile-menu-item">
+                    <label class="slider-label">效果</label>
+                    <button id="mouseEffectBtnMobile">推开</button>
+                </div>
+            </div>
+            <button class="help-btn" id="helpBtn" title="帮助文档">
+                <title>帮助文档</title>
+                <svg t="1750948241333" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="5103" width="32" height="32">
+                    <path
+                        d="M512 32C247.04 32 32 247.04 32 512s215.04 480 480 480 480-215.04 480-480S776.96 32 512 32z m0 853.12c-206.08 0-373.12-167.68-373.12-373.12S305.92 138.88 512 138.88a373.12 373.12 0 1 1 0 746.24z"
+                        fill="currentColor" p-id="5104"></path>
+                    <path
+                        d="M518.4 260.48c-49.28 0-88.96 14.72-118.4 42.88-30.08 28.8-44.8 68.48-44.8 117.76 0 1.92 0 21.76 14.08 37.12 6.4 7.04 18.56 14.72 38.4 14.72 38.4 0 54.4-30.08 55.68-51.2 0-21.12 3.84-37.12 11.52-47.36 4.48-6.4 13.44-15.36 39.68-15.36 15.36 0 26.24 3.84 33.28 10.24 7.68 7.68 11.52 19.2 11.52 32.64 0 10.24-3.84 20.48-11.52 29.44l-5.12 6.4c-42.24 38.4-65.92 64.64-74.88 82.56-9.6 18.56-14.08 40.32-14.08 67.84v8.32c0 17.28 14.08 42.88 53.12 42.88 40.32 0 53.76-26.88 55.68-42.88v-8.32c0-10.88 1.92-20.48 7.04-30.08 4.48-8.96 10.88-16.64 19.2-23.68 26.88-23.68 46.08-40.96 54.4-50.56 17.28-23.04 26.24-51.84 26.24-85.76 0-42.24-14.08-76.16-42.24-101.12-28.16-23.68-64-36.48-108.8-36.48z"
+                        fill="currentColor" p-id="5105"></path>
+                    <path d="M508.8 711.68m-55.68 0a55.68 55.68 0 1 0 111.36 0 55.68 55.68 0 1 0-111.36 0Z"
+                        fill="currentColor" p-id="5106"></path>
+                </svg>
+            </button>
+            <button class="theme-toggle-btn" id="themeToggleBtn" title="切换亮暗模式">
+                <span class="sun-icon" style="vertical-align: middle;">
+                    <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-label="亮/暗模式切换">
+                        <title>亮/暗模式切换</title>
+                        <path
+                            d="M512 768c-141.376 0-256-114.624-256-256s114.624-256 256-256 256 114.624 256 256-114.624 256-256 256z m0-85.333333a170.666667 170.666667 0 1 0 0-341.333334 170.666667 170.666667 0 0 0 0 341.333334zM469.333333 85.333333a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0V85.333333z m0 768a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0v-85.333334zM85.333333 554.666667a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334H85.333333z m768 0a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334h-85.333334zM161.834667 222.165333a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m576 576a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m-515.669334 64a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z m576-576a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z"
+                            fill="currentColor"></path>
+                    </svg>
+                </span>
+                <span class="moon-icon">
+                    <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M412.216889 185.173333a343.950222 343.950222 0 0 0-11.264 147.740445 340.650667 340.650667 0 0 0 436.451555 278.300444c-38.343111 126.008889-150.300444 223.345778-282.908444 239.502222a340.992 340.992 0 0 1-298.552889-112.469333C190.407111 664.064 160.995556 568.32 173.056 468.650667c16.156444-132.835556 113.322667-245.020444 239.160889-283.420445zM511.146667 56.888889a463.644444 463.644444 0 0 0-62.805334 4.266667c-201.557333 27.306667-363.406222 191.374222-387.982222 393.671111C26.680889 731.704889 241.493333 967.111111 511.146667 967.111111c18.773333 0 37.831111-1.137778 57.059555-3.527111 201.898667-24.632889 365.681778-186.766222 392.931556-388.721778 2.958222-21.788444 4.323556-43.292444 4.266666-64.512-0.113778-33.166222-27.420444-55.296-56.661333-55.296a58.026667 58.026667 0 0 0-34.929778 11.776 225.28 225.28 0 0 1-135.566222 45.112889c-10.695111 0-21.617778-0.739556-32.654222-2.275555-98.531556-13.767111-178.460444-93.809778-192.170667-192.568889a227.384889 227.384889 0 0 1 42.723556-168.561778c23.608889-37.376 1.422222-91.534222-43.463111-91.704889h-1.592889z"
+                            fill="currentColor"></path>
+                    </svg>
+                </span>
+            </button>
+
+        </div>
+    </nav>
+    <canvas id="canvas1"></canvas>
+
+    <!-- 文字生成模态框 -->
+    <div class="modal" id="textModal">
+        <div class="modal-content">
+            <div class="modal-drag-bar"></div>
+            <span class="close" id="closeTextModal">&times;</span>
+            <h2>文字生成</h2>
+            <select id="fontSelect" style="margin-bottom:8px;">
+                <optgroup label="中文字体">
+                    <option value="微软雅黑">微软雅黑</option>
+                    <option value="宋体">宋体</option>
+                    <option value="楷体">楷体</option>
+                    <option value="黑体">黑体</option>
+                    <option value="FangSong">仿宋</option>
+                    <option value="STXihei">华文细黑</option>
+                    <option value="STCaiyun">华文彩云</option>
+                    <option value="STKaiti">华文楷体</option>
+                    <option value="STSong">华文宋体</option>
+                    <option value="STHeiti">华文黑体</option>
+                    <option value="STFangsong">华文仿宋</option>
+                    <option value="STLiti">华文隶书</option>
+                </optgroup>
+                <optgroup label="英文字体">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Fira Code">Fira Code</option>
+                    <option value="JetBrains Mono">JetBrains Mono</option>
+                    <option value="Consolas">Consolas</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Tahoma">Tahoma</option>
+                </optgroup>
+            </select>
+            <div class="font-size-group">
+                <label for="fontSizeSlider">字体大小：</label>
+                <input type="range" id="fontSizeSlider" min="30" max="200" value="80" step="1">
+                <span id="fontSizeValue">80</span> px
+            </div>
+            <textarea id="textInput" placeholder="请输入内容（最多150字）" maxlength="150">NanoFlow⚛</textarea>
+            <div class="char-count" id="charCount">0/150</div>
+            <button id="textGenDoBtn" class="modal-gen-btn">生成</button>
+        </div>
+    </div>
+    <!-- 图片生成模态框 -->
+    <div class="modal" id="imgModal">
+        <div class="modal-content">
+            <div class="modal-drag-bar"></div>
+            <span class="close" id="closeImgModal">&times;</span>
+            <h2>图片生成</h2>
+            <label for="imgInput" class="img-upload-label">导入图片</label>
+            <input type="file" id="imgInput" accept="image/*">
+            <div id="imgPreview"></div>
+            <button id="binarizeBtn" class="modal-gen-btn" style="margin-top:10px;">二值化预览</button>
+            <div id="imgModeTip"></div>
+            <div class="radio-inputs img-bw-group">
+                <label class="radio">
+                    <input type="radio" name="imgMode" id="imgModeOrigin" value="origin" checked>
+                    <span class="name">原图</span>
+                </label>
+                <label class="radio">
+                    <input type="radio" name="imgMode" id="imgModeMono" value="mono">
+                    <span class="name">二值化</span>
+                </label>
+                <label class="radio">
+                    <input type="radio" name="imgMode" id="imgModeRemoveBg" value="removebg">
+                    <span class="name">去背景</span>
+                </label>
+            </div>
+            <div class="mono-group" id="monoGroup">
+                <div style="width:100%;display:flex;align-items:center;gap:10px;">
+                    <label for="monoThreshold" style="white-space:nowrap;">容差</label>
+                    <input type="range" id="monoThreshold" min="0" max="255" value="128" style="flex:1;">
+                    <span id="monoThresholdValue">128</span>
+                </div>
+                <div style="width:100%;display:flex;align-items:center;gap:10px;">
+                    <label style="white-space:nowrap;">反选</label>
+                    <label class="img-bw-option">
+                        <input class="custom-checkbox" type="checkbox" id="monoInvert">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="remove-bg-group" id="removeBgGroup"
+                style="width:100%;margin:10px 0 0 0;display:none;align-items:flex-start;gap:10px;flex-wrap:wrap;flex-direction:column;">
+                <div style="width:100%;display:flex;align-items:center;gap:10px;">
+                    <label for="removeBgColor" class="theme-color-label" style="white-space:nowrap;">背景色</label>
+                    <input type="color" id="removeBgColor" class="theme-color-picker" value="#ffffff">
+                </div>
+                <div style="width:100%;display:flex;align-items:center;gap:10px;">
+                    <label for="removeBgThreshold" style="white-space:nowrap;">容差</label>
+                    <input type="range" id="removeBgThreshold" min="0" max="255" value="32" style="flex:1;">
+                    <span id="removeBgThresholdValue">32</span>
+                </div>
+            </div>
+            <button id="imgGenDoBtn" class="modal-gen-btn">生成</button>
+        </div>
+    </div>
+    <!-- 帮助模态框 -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-drag-bar"></div>
+            <span class="close" id="closeHelpModal">&times;</span>
+            <h2>帮助文档</h2>
+            <div class="help-content">
+                <p style="font-size:21px;">欢迎使用<span
+                        style="font-style:italic;font-weight:bold;">NanoFlow</span>，一个基于Web的粒子生成器！</p>
+                <ul>
+                    <li>点击导航栏最右侧的
+                        <span class="help-sun-icon" style="vertical-align: middle;">
+                            <svg viewBox="0 0 1024 1024" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg"
+                                aria-label="亮/暗模式切换">
+                                <title>亮/暗模式切换</title>
+                                <path
+                                    d="M512 768c-141.376 0-256-114.624-256-256s114.624-256 256-256 256 114.624 256 256-114.624 256-256 256z m0-85.333333a170.666667 170.666667 0 1 0 0-341.333334 170.666667 170.666667 0 0 0 0 341.333334zM469.333333 85.333333a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0V85.333333z m0 768a42.666667 42.666667 0 1 1 85.333334 0v85.333334a42.666667 42.666667 0 1 1-85.333334 0v-85.333334zM85.333333 554.666667a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334H85.333333z m768 0a42.666667 42.666667 0 1 1 0-85.333334h85.333334a42.666667 42.666667 0 1 1 0 85.333334h-85.333334zM161.834667 222.165333a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m576 576a42.666667 42.666667 0 0 1 60.330666-60.330666l64 64a42.666667 42.666667 0 0 1-60.330666 60.330666l-64-64z m-515.669334 64a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z m576-576a42.666667 42.666667 0 0 1-60.330666-60.330666l64-64a42.666667 42.666667 0 0 1 60.330666 60.330666l-64 64z"
+                                    fill="currentColor"></path>
+                            </svg>
+                        </span>
+                        <span class="help-moon-icon">
+                            <svg viewBox="0 0 1024 1024" width="1em" height="1em" xmlns="http://www.w3.org/2000/svg"
+                                aria-label="亮/暗模式切换">
+                                <path
+                                    d="M412.216889 185.173333a343.950222 343.950222 0 0 0-11.264 147.740445 340.650667 340.650667 0 0 0 436.451555 278.300444c-38.343111 126.008889-150.300444 223.345778-282.908444 239.502222a340.992 340.992 0 0 1-298.552889-112.469333C190.407111 664.064 160.995556 568.32 173.056 468.650667c16.156444-132.835556 113.322667-245.020444 239.160889-283.420445zM511.146667 56.888889a463.644444 463.644444 0 0 0-62.805334 4.266667c-201.557333 27.306667-363.406222 191.374222-387.982222 393.671111C26.680889 731.704889 241.493333 967.111111 511.146667 967.111111c18.773333 0 37.831111-1.137778 57.059555-3.527111 201.898667-24.632889 365.681778-186.766222 392.931556-388.721778 2.958222-21.788444 4.323556-43.292444 4.266666-64.512-0.113778-33.166222-27.420444-55.296-56.661333-55.296a58.026667 58.026667 0 0 0-34.929778 11.776 225.28 225.28 0 0 1-135.566222 45.112889c-10.695111 0-21.617778-0.739556-32.654222-2.275555-98.531556-13.767111-178.460444-93.809778-192.170667-192.568889a227.384889 227.384889 0 0 1 42.723556-168.561778c23.608889-37.376 1.422222-91.534222-43.463111-91.704889h-1.592889z"
+                                    fill="currentColor"></path>
+                            </svg>
+                        </span>
+                        <span class="help-keyword">按钮</span>可以进行<span class="help-keyword">亮/暗</span>模式切换。
+                    </li>
+                    <li>可通过<span class="help-keyword">文字生成</span>或<span class="help-keyword">图片生成</span>按钮选择不同的粒子点阵生成模式。
+                    </li>
+                    <li>文字生成支持<span class="help-keyword">多种字体</span>，字体大小可调节，字数上限为<span
+                            class="help-keyword">150</span>字。</li>
+                    <li>点击<span class="help-keyword">颜色</span>按钮可打开<span class="help-keyword">颜色设置</span>，支持<span
+                            class="help-keyword">&nbsp;纯色&nbsp;</span>/<span class="help-keyword">线性渐变</span>/<span
+                            class="help-keyword">径向渐变</span>/<span class="help-keyword">手动上色</span>四种颜色模式，可自定义颜色。</li>
+                    <li>手动上色模式画板下有两个按钮：</li>
+                    <ul>
+                      <li><span class="help-keyword">填充画板</span>：用当前颜色填满所有粒子。</li>
+                      <li><span class="help-keyword">恢复上色</span>：恢复上一次的上色内容，适用于导入新图片后想应用上一次的上色效果。</li>
+                    </ul>
+                    <li>图片生成支持三种模式：</li>
+                    <ul>
+                        <li><span class="help-keyword">原图</span>：直接用图片像素生成粒子，<span class="help-keyword">不支持自定义颜色</span>。
+                        </li>
+                        <li><span class="help-keyword">二值化</span>：将图片转为黑白两色，可调节容差，默认选择黑区域，支持<span
+                                class="help-keyword">反选</span>，选中的区域<span class="help-keyword">支持自定义颜色</span>。</li>
+                        <li><span class="help-keyword">去背景</span>：可用<span
+                                class="help-keyword">取色器</span>吸取背景色，并通过调节容差去除背景，保留部分为<span
+                                class="help-keyword">原图颜色</span>。</li>
+                    </ul>
+                    <li>点击<span class="help-keyword">二值化预览</span>或<span
+                            class="help-keyword">去背景预览</span>按钮可一键切换原图和处理后效果，参数调整后可实时预览。</li>
+                    <li>鼠标在粒子点阵上移动可与粒子交互，支持<span class="help-keyword">推开</span>/<span
+                            class="help-keyword">吸引</span>/<span class="help-keyword">环绕</span>三种效果。</li>
+                    <li>鼠标<span class="help-keyword">快速移动</span>时，粒子会<span class="help-keyword">"炸开"</span>。</li>
+                    <li>支持调整多种参数：</li>
+                    <ul>
+                        <li><span class="help-keyword">密度</span>：粒子密集度，数值越大粒子越密集。</li>
+                        <li><span class="help-keyword">缩放</span>：点阵大小缩放比例，数值越大点阵越大。</li>
+                        <li><span class="help-keyword">弹性系数</span>：粒子弹性系数，数值越大粒子归位速度越快。</li>
+                        <li><span class="help-keyword">力度</span>：鼠标交互效果的程度，数值越大效果越明显。</li>
+                        <li><span class="help-keyword">大小</span>：粒子的大小(小/中/大)。</li>
+                    </ul>
+                    <li>点击<span class="help-keyword">导出</span>可选择多种导出模式：</li>
+                    <ul>
+                        <li><span class="help-keyword">HTML导出</span>：保存当前粒子点阵为独立<span
+                                class="help-keyword">HTML文件</span>，包含完整的交互功能，所有颜色/渐变参数与当前页面一致。</li>
+                        <li><span class="help-keyword">图片导出</span>：将当前粒子状态导出为<span
+                                class="help-keyword">图片</span>，支持<span class="help-keyword">PNG</span>/<span
+                                class="help-keyword">SVG</span>/<span class="help-keyword">JPG</span>/<span
+                                class="help-keyword">WebP</span>四种格式。</li>
+                        <li><span class="help-keyword">TXT导出</span>：将<span class="help-keyword">文本</span>/<span
+                                class="help-keyword">二值化图像</span>模式下的点阵导出为txt文本导出为<span
+                                class="help-keyword">TXT文本</span>，可自定义<span class="help-keyword">前景/背景</span>符号。</li>
+
+                    </ul>
+                    <li style="font-size:1.2em;font-family:黑体, Microsoft YaHei, Arial, sans-serif;"><span
+                            class="help-keyword">请不要尝试导出密集点阵或过大的点阵，非常容易导致浏览器崩溃或卡顿！</span></li>
+                    <li>tips: 弹框顶部横杠可用于<span class="help-keyword">拖拽</span>弹框。</li>
+                    <li>tips: 图片生成模式下，图片大小<span class="help-keyword">不宜过大</span>，否则可能导致浏览器<span
+                            class="help-keyword">卡顿</span>或浏览器<span class="help-keyword">崩溃</span>。</li>
+                    <li>tips: <span class="help-keyword">环绕</span>效果下，<span class="help-keyword">弹性系数</span>小一些效果会更好。
+                    </li>
+                </ul>
+                <p>作者：石榴（@ZTMYO）</p>
+            </div>
+        </div>
+    </div>
+    <!-- 导出模态框 -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-drag-bar"></div>
+            <span class="close" id="closeExportModal">&times;</span>
+            <h2>导出</h2>
+            <div class="export-options">
+                <div class="export-option">
+                    <h3>HTML导出</h3>
+                    <p>导出为独立的HTML文件，包含完整的交互功能</p>
+                    <button id="exportHtmlBtn" class="export-btn">导出HTML</button>
+                </div>
+                <div class="export-option">
+                    <h3>图片导出</h3>
+                    <p>将当前粒子状态导出为图片</p>
+                    <div class="radio-inputs img-bw-group image-format-group">
+                        <label class="radio">
+                            <input type="radio" name="imageFormat" value="png" checked>
+                            <span class="name">PNG (推荐)</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="imageFormat" value="svg">
+                            <span class="name">SVG</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="imageFormat" value="jpg">
+                            <span class="name">JPG</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="imageFormat" value="webp">
+                            <span class="name">WebP</span>
+                        </label>
+                    </div>
+                    <div class="image-quality-option" id="imageQualityOption" style="display:none;">
+                        <label for="imageQuality">图片质量:</label>
+                        <input type="range" id="imageQuality" min="0.1" max="1" step="0.1" value="0.8">
+                        <span id="imageQualityValue">80%</span>
+                    </div>
+                    <button id="exportImageBtn" class="export-btn">导出图片</button>
+                </div>
+                <div class="export-option">
+                    <h3>TXT导出</h3>
+                    <p>将文本或二值化图像模式下的点阵导出为txt文本</p>
+                    <div class="txt-export-inputs">
+                        <input type="text" id="txtExportSymbolFg" maxlength="2" value="."> <label
+                            for="txtExportSymbolFg">前景符号</label>
+                        <input type="text" id="txtExportSymbolBg" maxlength="2" value=" "> <label
+                            for="txtExportSymbolBg">背景符号</label>
+                    </div>
+                    <button id="exportTxtBtn" class="export-btn">导出TXT</button>
+                    <p style="margin-top: 10px; font-weight: bold;">请勿轻易尝试导出密集的点阵，以免造成浏览器崩溃！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 颜色设置模态框 -->
+    <div class="modal" id="gradientModal">
+        <div class="modal-content">
+            <div class="modal-drag-bar"></div>
+            <span class="close" id="closeGradientModal">&times;</span>
+            <h2>颜色设置</h2>
+            <div class="gradient-options">
+                <div class="gradient-type-group">
+                    <div class="radio-inputs img-bw-group gradient-type-options">
+                        <label class="radio">
+                            <input type="radio" id="gradientTypeSolid" name="gradientType" value="solid" checked>
+                            <span class="name">纯色</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="gradientTypeLinear" name="gradientType" value="linear">
+                            <span class="name">线性渐变</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="gradientTypeRadial" name="gradientType" value="radial">
+                            <span class="name">径向渐变</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="gradientTypeManual" name="gradientType" value="manual">
+                            <span class="name">手动上色</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="gradient-colors-group">
+                    <h3>颜色设置</h3>
+                    <div class="color-section">
+                        <div class="color-inputs">
+                            <div class="color-input-item">
+                                <label for="gradientColor1">主色</label>
+                                <input type="color" id="gradientColor1" class="theme-color-picker" value="#000000">
+                            </div>
+                            <div class="color-input-item" id="gradientColor2Group" style="display:none;">
+                                <label for="gradientColor2">次色</label>
+                                <input type="color" id="gradientColor2" class="theme-color-picker" value="#ffffff">
+                            </div>
+                        </div>
+                        <div class="gradient-preview" id="gradientPreviewContainer">
+                            <div id="gradientPreview" class="gradient-preview-box" style="display:none;"></div>
+                            <div id="linearGradientPreview" class="gradient-preview-box" style="display:none;"></div>
+                            <div id="radialGradientPreview" class="gradient-preview-box" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-para-group" id="gradientDirectionGroup" style="display:none;">
+                    <h3>线性渐变设置</h3>
+                    <div class="radio-inputs img-bw-group direction-options">
+                        <label class="radio">
+                            <input type="radio" id="dirRight" name="gradientDirection" value="to-right" checked>
+                            <span class="name">→ 向右</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="dirBottom" name="gradientDirection" value="to-bottom">
+                            <span class="name">↓ 向下</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="dirBottomRight" name="gradientDirection" value="to-bottom-right">
+                            <span class="name">↘ 右下</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="dirBottomLeft" name="gradientDirection" value="to-bottom-left">
+                            <span class="name">↙ 左下</span>
+                        </label>
+                    </div>
+                    <div class="gradient-params">
+                        <div class="gradient-param-item">
+                            <label for="linearOffset">偏移量:</label>
+                            <input type="range" id="linearOffset" min="0" max="100" value="50" step="1">
+                            <span id="linearOffsetValue">50%</span>
+                        </div>
+                        <div class="gradient-param-item">
+                            <label for="linearOffsetSize">过渡范围:</label>
+                            <input type="range" id="linearOffsetSize" min="10" max="200" value="100" step="1">
+                            <span id="linearOffsetSizeValue">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-para-group" id="radialGradientGroup" style="display:none;">
+                    <h3>径向渐变设置</h3>
+                    <div class="radio-inputs img-bw-group radial-shape-options">
+                        <label class="radio">
+                            <input type="radio" id="shapeCircle" name="radialShape" value="circle" checked>
+                            <span class="name">圆形</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="shapeRect" name="radialShape" value="rect">
+                            <span class="name">方形</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="shapeDiamond" name="radialShape" value="diamond">
+                            <span class="name">菱形</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" id="shapeCross" name="radialShape" value="cross">
+                            <span class="name">十字形</span>
+                        </label>
+                    </div>
+                    <div class="gradient-params">
+                        <div class="gradient-param-item">
+                            <label for="radialCenterX">中心X位置:</label>
+                            <input type="range" id="radialCenterX" min="0" max="100" value="50" step="1">
+                            <span id="radialCenterXValue">50%</span>
+                        </div>
+                        <div class="gradient-param-item">
+                            <label for="radialCenterY">中心Y位置:</label>
+                            <input type="range" id="radialCenterY" min="0" max="100" value="50" step="1">
+                            <span id="radialCenterYValue">50%</span>
+                        </div>
+                        <div class="gradient-param-item">
+                            <label for="radialSize">大小:</label>
+                            <input type="range" id="radialSize" min="10" max="200" value="100" step="1">
+                            <span id="radialSizeValue">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-para-group" id="manualColorGroup" style="display:none;">
+                    <h3>手动上色设置</h3>
+                    <div class="manual-canvas-container">
+                        <canvas id="manualCanvas" width="300" height="200"></canvas>
+                    </div>
+                    <div class="manual-color-tools">
+                        <div class="color-picker-section">
+                            <label for="manualColorPicker">选择颜色:</label>
+                            <input type="color" id="manualColorPicker" class="theme-color-picker" value="#000000">
+                        </div>
+                        <div class="brush-size-section">
+                            <label for="brushSize">画笔大小:</label>
+                            <input type="range" id="brushSize" min="1" max="20" value="20" step="1">
+                            <span id="brushSizeValue">20</span>
+                        </div>
+                        <div class="tool-buttons">
+                            <button id="fillCanvasBtn" class="tool-btn">填充画板</button>
+                            <button id="restoreCanvasBtn" class="tool-btn">恢复上色</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-actions">
+                    <button id="applyGradientBtn" class="modal-gen-btn">应用</button>
+                    <button id="resetGradientBtn" class="modal-gen-btn"
+                        style="background: var(--button-secondary-bg); color: var(--text-primary);">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="nanoflow.js"></script>
+</body>
+
+</html>
+

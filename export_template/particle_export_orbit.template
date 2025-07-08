@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>NanoFlowExportOrbit</title>
+</head>
+<body>
+<canvas id="canvas1" style="display:block;margin:0 auto;background:#fff;"></canvas>
+<script>
+window.NanoFlowExport = {
+    cwidth: {{cwidth}},
+    cheight: {{cheight}},
+    elasticityFactor: {{elasticityFactor}},
+    maxPushForce: {{maxPushForce}},
+    particles: {{particles}}
+};
+(function(){
+const cfg = window.NanoFlowExport;
+const canvas = document.getElementById('canvas1');
+const ctx = canvas.getContext('2d');
+canvas.width = cfg.cwidth;
+canvas.height = cfg.cheight;
+let elasticityFactor = cfg.elasticityFactor;
+let maxPushForce = cfg.maxPushForce;
+let mouseEffect = 'orbit';
+class Particle {
+    constructor(data) { Object.assign(this, data); }
+    update(mouse, disperseFactor, scatterStrength) {
+        if (scatterStrength > 0.01) {
+            let explosionFactor = Math.min(scatterStrength * 2.5, 6);
+            this.offsetX += (Math.random() - 0.5) * scatterStrength * explosionFactor;
+            this.offsetY += (Math.random() - 0.5) * scatterStrength * explosionFactor;
+            let maxOffset = scatterStrength * 18 + 18;
+            this.offsetX = Math.max(-maxOffset, Math.min(maxOffset, this.offsetX));
+            this.offsetY = Math.max(-maxOffset, Math.min(maxOffset, this.offsetY));
+            if (scatterStrength > 6) {
+                this.vx += (Math.random() - 0.5) * scatterStrength * 2;
+                this.vy += (Math.random() - 0.5) * scatterStrength * 2;
+            }
+        } else {
+            this.offsetX *= 0.8;
+            this.offsetY *= 0.8;
+        }
+        this.destX = this.cx + (this.baseX - this.cx) * disperseFactor + this.offsetX;
+        this.destY = this.cy + (this.baseY - this.cy) * disperseFactor + this.offsetY;
+        let dx = this.destX - this.x;
+        let dy = this.destY - this.y;
+        this.vx += dx * elasticityFactor;
+        this.vy += dy * elasticityFactor;
+        let enableEffect = (disperseFactor <= 1.01 && scatterStrength < 0.05 && mouse) || (scatterStrength > 0 && mouse);
+        if (enableEffect) {
+            let mx = mouse.x;
+            let my = mouse.y;
+            let dist2 = (this.x - mx) * (this.x - mx) + (this.y - my) * (this.y - my);
+            let minDist = 18 + Math.min(mouse.speed * 2.5, 120);
+            let angle = Math.atan2(this.y - my, this.x - mx);
+            let thickness = (minDist * (2.5 + maxPushForce * 7)) ** 2;
+            if (dist2 < thickness) {
+                let orbitStrength = 0.02 + 1.8 * Math.tanh(maxPushForce * 2);
+                let tangentAngle = angle + Math.PI / 2;
+                this.vx += Math.cos(tangentAngle) * orbitStrength;
+                this.vy += Math.sin(tangentAngle) * orbitStrength;
+            }
+        }
+        if (!this.orbiting) {
+            this.vx *= 0.7;
+            this.vy *= 0.7;
+            this.x += this.vx;
+            this.y += this.vy;
+        }
+        if (this.orbiting && mouseEffect === 'orbit' && mouse.x >= 0 && mouse.y >= 0) {
+            let bdx = this.baseX - mouse.x;
+            let bdy = this.baseY - mouse.y;
+            this.orbitRadius = Math.sqrt(bdx * bdx + bdy * bdy);
+            if (!this._orbitAngleInitialized) {
+                this.orbitAngle = Math.atan2(bdy, bdx);
+                this._orbitAngleInitialized = true;
+            }
+            let speed = 0.012 + 0.018 * Math.tanh(maxPushForce * 2);
+            this.orbitAngle += speed;
+            let tx = mouse.x + this.orbitRadius * Math.cos(this.orbitAngle);
+            let ty = mouse.y + this.orbitRadius * Math.sin(this.orbitAngle);
+            let dx = tx - this.x;
+            let dy = ty - this.y;
+            this.vx += dx * elasticityFactor * 1.1;
+            this.vy += dy * elasticityFactor * 1.1;
+            this.vx *= 0.92;
+            this.vy *= 0.92;
+            this.x += this.vx;
+            this.y += this.vy;
+            return;
+        } else {
+            this._orbitAngleInitialized = false;
+        }
+    }
+}
+let particles = cfg.particles.map(p => new Particle(p));
+let mouse = { x: -1000, y: -1000, vx: 0, vy: 0, speed: 0 };
+canvas.addEventListener('mousemove', function (e) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+    if (mouse.x < 0 || mouse.y < 0) {
+        mouse.vx = 0;
+        mouse.vy = 0;
+        mouse.speed = 0;
+    } else {
+        mouse.vx = cx - mouse.x;
+        mouse.vy = cy - mouse.y;
+        mouse.speed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
+    }
+    mouse.x = cx;
+    mouse.y = cy;
+});
+canvas.addEventListener('mouseleave', function () {
+    mouse.x = -1000;
+    mouse.y = -1000;
+    mouse.vx = 0;
+    mouse.vy = 0;
+    mouse.speed = 0;
+    for (let p of particles) {
+        p.orbiting = false;
+    }
+});
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let disperseFactor = 1;
+    let scatterStrength = 0;
+    if (mouse) {
+        if (mouse.speed > 220) {
+            scatterStrength = Math.min((mouse.speed - 220) / 8, 16);
+        }
+    }
+    for (let p of particles) {
+        p.update(mouse, disperseFactor, scatterStrength);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+    }
+    requestAnimationFrame(animate);
+}
+animate();
+})();
+</script>
+</body>
+</html> 
