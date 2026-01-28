@@ -1,7 +1,7 @@
 window.addEventListener('load', function () {
     // Canvas 初始化
     const canvas = document.getElementById('canvas1');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -96,6 +96,7 @@ window.addEventListener('load', function () {
     const exportHtmlBtn = document.getElementById('exportHtmlBtn');
     const exportImageBtn = document.getElementById('exportImageBtn');
     const exportTxtBtn = document.getElementById('exportTxtBtn');
+    const exportTxtCopyBtn = document.getElementById('exportTxtCopyBtn');
     const imageFormatOptions = document.querySelectorAll('input[name="imageFormat"]');
     const imageQualityOption = document.getElementById('imageQualityOption');
     const imageQuality = document.getElementById('imageQuality');
@@ -456,27 +457,41 @@ window.addEventListener('load', function () {
             }
             return result;
         }
-        let words = text.split(' ');
-        let segments = [];
-        for (let word of words) {
-            if (ctx.measureText(word).width <= maxTxtWidth) {
-                segments.push(word);
-            } else {
-                segments.push(...splitWord(word));
-            }
-        }
         let linesArray = [];
-        let line = '';
-        for (let seg of segments) {
-            let testLine = line ? line + ' ' + seg : seg;
-            if (ctx.measureText(testLine).width > maxTxtWidth) {
-                if (line) linesArray.push(line);
-                line = seg;
-            } else {
-                line = testLine;
+        // 先按換行符拆分，保留用戶在文本域中的手動換行
+        let paragraphs = String(text).split(/\r?\n/);
+        paragraphs.forEach(paragraph => {
+            // 空行：直接推入空字符串，僅佔垂直空間，不繪製文字
+            if (paragraph === '') {
+                linesArray.push('');
+                return;
             }
-        }
-        if (line) linesArray.push(line);
+
+            let words = paragraph.split(' ');
+            let segments = [];
+
+            // 先根據最大寬度拆分過長單詞/連續字符
+            for (let word of words) {
+                if (ctx.measureText(word).width <= maxTxtWidth) {
+                    segments.push(word);
+                } else {
+                    segments.push(...splitWord(word));
+                }
+            }
+
+            // 在當前段落內做自動換行
+            let line = '';
+            for (let seg of segments) {
+                let testLine = line ? line + ' ' + seg : seg;
+                if (ctx.measureText(testLine).width > maxTxtWidth) {
+                    if (line) linesArray.push(line);
+                    line = seg;
+                } else {
+                    line = testLine;
+                }
+            }
+            if (line) linesArray.push(line);
+        });
         let maxLineWidth = 0;
         linesArray.map(el => {
             let w = ctx.measureText(el).width;
@@ -487,7 +502,9 @@ window.addEventListener('load', function () {
         ctx.textAlign = 'left';
         linesArray.forEach((el, index) => {
             ctx.fillStyle = 'white';
-            ctx.fillText(el, canvas.width / 2 - maxLineWidth / 2, offsetY + index * 120);
+            if (el) {
+                ctx.fillText(el, canvas.width / 2 - maxLineWidth / 2, offsetY + index * 120);
+            }
         });
         ctx.textAlign = 'center';
         let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -1153,7 +1170,7 @@ window.addEventListener('load', function () {
         const canvas = document.createElement('canvas');
         canvas.width = w;
         canvas.height = h;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         ctx.drawImage(img, 0, 0, w, h);
         const imgData = ctx.getImageData(0, 0, w, h);
         const data = imgData.data;
@@ -1330,7 +1347,7 @@ window.addEventListener('load', function () {
             return;
         }
         const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
+        const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
         tempCanvas.width = canvas.width;
         tempCanvas.height = canvas.height;
         tempCtx.fillStyle = getComputedStyle(canvas).backgroundColor || '#f4f4f8';
@@ -1716,31 +1733,38 @@ window.addEventListener('load', function () {
             setParticleSize(nextSize);
         });
     }
+    function buildTxtFromParticles() {
+        if (mode === 'image' && !imgModeMono.checked) {
+            alert('图像生成的点阵仅支持二值化模式下导出TXT');
+            return null;
+        }
+        const fgSymbol = (txtExportSymbolFgInput && txtExportSymbolFgInput.value) ? txtExportSymbolFgInput.value : '.';
+        const bgSymbol = (txtExportSymbolBgInput && txtExportSymbolBgInput.value) ? txtExportSymbolBgInput.value : ' ';
+        let ps = getCurrentParticles();
+        if (!ps.length) return '';
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        ps.forEach(p => {
+            if (p.x < minX) minX = p.x;
+            if (p.y < minY) minY = p.y;
+            if (p.x > maxX) maxX = p.x;
+            if (p.y > maxY) maxY = p.y;
+        });
+        const step = particleGap > 0 ? particleGap : 1;
+        let txt = '';
+        for (let y = Math.round(minY); y <= Math.round(maxY); y += step) {
+            for (let x = Math.round(minX); x <= Math.round(maxX); x += step) {
+                let found = ps.some(p => Math.abs(p.x - x) < step / 2 && Math.abs(p.y - y) < step / 2);
+                txt += found ? fgSymbol : bgSymbol;
+            }
+            txt += '\n';
+        }
+        return txt;
+    }
+
     if (exportTxtBtn) {
         exportTxtBtn.addEventListener('click', function () {
-            if (mode === 'image' && !imgModeMono.checked) {
-                alert('图像生成的点阵仅支持二值化模式下导出TXT');
-                return;
-            }
-            const fgSymbol = (txtExportSymbolFgInput && txtExportSymbolFgInput.value) ? txtExportSymbolFgInput.value : '.';
-            const bgSymbol = (txtExportSymbolBgInput && txtExportSymbolBgInput.value) ? txtExportSymbolBgInput.value : ' ';
-            let ps = getCurrentParticles();
-            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            ps.forEach(p => {
-                if (p.x < minX) minX = p.x;
-                if (p.y < minY) minY = p.y;
-                if (p.x > maxX) maxX = p.x;
-                if (p.y > maxY) maxY = p.y;
-            });
-            const step = particleGap > 0 ? particleGap : 1;
-            let txt = '';
-            for (let y = Math.round(minY); y <= Math.round(maxY); y += step) {
-                for (let x = Math.round(minX); x <= Math.round(maxX); x += step) {
-                    let found = ps.some(p => Math.abs(p.x - x) < step / 2 && Math.abs(p.y - y) < step / 2);
-                    txt += found ? fgSymbol : bgSymbol;
-                }
-                txt += '\n';
-            }
+            const txt = buildTxtFromParticles();
+            if (txt == null) return;
             const blob = new Blob([txt], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1752,6 +1776,51 @@ window.addEventListener('load', function () {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             }, 100);
+        });
+    }
+
+    if (exportTxtCopyBtn) {
+        exportTxtCopyBtn.addEventListener('click', function () {
+            const originalText = exportTxtCopyBtn.textContent;
+            // 先立即给用户反馈
+            exportTxtCopyBtn.textContent = '已复制';
+            const handleLeave = () => {
+                exportTxtCopyBtn.textContent = originalText;
+                exportTxtCopyBtn.removeEventListener('mouseleave', handleLeave);
+            };
+            exportTxtCopyBtn.addEventListener('mouseleave', handleLeave);
+
+            // 将耗时的 TXT 生成和剪贴板写入放到下一轮事件循环，避免阻塞本次渲染
+            setTimeout(async () => {
+                const txt = buildTxtFromParticles();
+                if (txt == null) {
+                    // 构建失败（例如模式不支持），恢复文案并移除监听
+                    exportTxtCopyBtn.textContent = originalText;
+                    exportTxtCopyBtn.removeEventListener('mouseleave', handleLeave);
+                    return;
+                }
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(txt);
+                    } else {
+                        // 兼容不支持 clipboard API 的环境
+                        const textarea = document.createElement('textarea');
+                        textarea.value = txt;
+                        textarea.style.position = 'fixed';
+                        textarea.style.opacity = '0';
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                    }
+                } catch (e) {
+                    console.error('复制TXT失败', e);
+                    // 复制失败时恢复按钮文字
+                    exportTxtCopyBtn.textContent = originalText;
+                    exportTxtCopyBtn.removeEventListener('mouseleave', handleLeave);
+                    alert('复制TXT失败，请检查浏览器权限或手动复制');
+                }
+            }, 0);
         });
     }
 
@@ -1826,7 +1895,7 @@ window.addEventListener('load', function () {
     function initManualColorMode() {
         if (!manualCanvasElement) return;
         manualCanvas = manualCanvasElement;
-        manualCtx = manualCanvas.getContext('2d');
+        manualCtx = manualCanvas.getContext('2d', { willReadFrequently: true });
         if (manualCanvasData) {
             // 恢复上次的上色内容
             const imageData = new ImageData(

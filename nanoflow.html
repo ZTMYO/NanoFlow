@@ -9,18 +9,19 @@
 <html lang="en">
 
 <head>
+<base href="./">
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1, minimum-scale=1">
     <title>NanoFlow</title>
-    <link rel="icon" href="NanoImg/title_logo.png">
-    <link rel="stylesheet" href="nanoflow.css">
+    <link rel="icon" href="./NanoImg/title_logo.png">
+    <link rel="stylesheet" href="./nanoflow.css">
 </head>
 
 <body>
     <nav class="navbar">
         <div class="nav-title">
-            <img id="navLogo" class="nav-logo" src="NanoImg/logo_b.png" alt="logo" height="32">
+            <img id="navLogo" class="nav-logo" src="./NanoImg/logo_b.png" alt="logo" height="32">
         </div>
         <div class="nav-center">
             <button id="textGenBtn" class="desktop-only">文字生成</button>
@@ -367,7 +368,10 @@
                         <input type="text" id="txtExportSymbolBg" maxlength="2" value=" "> <label
                             for="txtExportSymbolBg">背景符号</label>
                     </div>
-                    <button id="exportTxtBtn" class="export-btn">导出TXT</button>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                        <button id="exportTxtBtn" class="export-btn">导出TXT</button>
+                        <button id="exportTxtCopyBtn" class="export-btn" type="button">复制TXT</button>
+                    </div>
                     <p style="margin-top: 10px; font-weight: bold;">请勿轻易尝试导出密集的点阵，以免造成浏览器崩溃！</p>
                 </div>
             </div>
@@ -525,7 +529,7 @@
             </div>
         </div>
     </div>
-    <script src="nanoflow.js"></script>
+    <script src="./nanoflow.js"></script>
 </body>
 
 </html>

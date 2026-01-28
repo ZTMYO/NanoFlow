@@ -1,36 +1,38 @@
 :root {
-    --bg-color: white;
-    --modal-content-bg: #fff;
-    --text-primary: #222;
-    --text-secondary: #555;
-    --text-tertiary: #888;
-    --border-color: #cccccc;
-    --input-bg: #fff;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --shadow-color-secondary: rgba(0, 0, 0, 0.1);
-    --option-hover: #f5f5f5;
-    --button-secondary-bg: #e9e9e9;
-    --button-primary-bg: #000000;
-    --button-text: #ffffff;
-    --button-hover-bg: #393939;
+    --hue: 0;                /* 基础色相 */
+    --saturation: 0%;        /* 基础饱和度 */
+    
+    --bg-color: hsl(var(--hue), var(--saturation), 100%);
+    --modal-content-bg: hsl(var(--hue), var(--saturation), 100%);
+    --text-primary: hsl(var(--hue), var(--saturation), 13%);
+    --text-secondary: hsl(var(--hue), var(--saturation), 33%);
+    --text-tertiary: hsl(var(--hue), var(--saturation), 53%);
+    --border-color: hsl(var(--hue), var(--saturation), 80%);
+    --input-bg: hsl(var(--hue), var(--saturation), 100%);
+    --shadow-color: hsla(var(--hue), var(--saturation), 0%, 0.1);
+    --shadow-color-secondary: hsla(var(--hue), var(--saturation), 0%, 0.1);
+    --option-hover: hsl(var(--hue), var(--saturation), 96%);
+    --button-secondary-bg: hsl(var(--hue), var(--saturation), 91%);
+    --button-primary-bg: hsl(var(--hue), var(--saturation), 0%);
+    --button-text: hsl(var(--hue), var(--saturation), 100%);
+    --button-hover-bg: hsl(var(--hue), var(--saturation), 22%);
 }
 
 html.dark-mode {
-    --bg-color: black;
-    --modal-content-bg: #3a3a3a;
-    --text-primary: #f0f0f0;
-    --text-secondary: #bbb;
-    --text-tertiary: #888;
-    --border-color: #777;
-    --input-bg: #2c2c2c;
-    --shadow-color: rgba(255, 255, 255, 0.207);
-    --shadow-color-secondary: rgba(255, 255, 255, 0.072);
-    --option-hover: #1d1d1d;
-    --button-secondary-bg: rgba(255, 255, 255, 0.1);
-    --button-primary-bg: #ffffff;
-    --button-text: #000000;
-    --button-hover-bg: #e0e0e0;
-
+    --bg-color: hsl(var(--hue), var(--saturation), 0%);
+    --modal-content-bg: hsl(var(--hue), var(--saturation), 23%);
+    --text-primary: hsl(var(--hue), var(--saturation), 94%);
+    --text-secondary: hsl(var(--hue), var(--saturation), 73%);
+    --text-tertiary: hsl(var(--hue), var(--saturation), 53%);
+    --border-color: hsl(var(--hue), var(--saturation), 47%);
+    --input-bg: hsl(var(--hue), var(--saturation), 17%);
+    --shadow-color: hsla(var(--hue), var(--saturation), 100%, 0.207);
+    --shadow-color-secondary: hsla(var(--hue), var(--saturation), 100%, 0.072);
+    --option-hover: hsl(var(--hue), var(--saturation), 11%);
+    --button-secondary-bg: hsla(var(--hue), var(--saturation), 100%, 0.1);
+    --button-primary-bg: hsl(var(--hue), var(--saturation), 100%);
+    --button-text: hsl(var(--hue), var(--saturation), 0%);
+    --button-hover-bg: hsl(var(--hue), var(--saturation), 88%);
 }
 
 @keyframes fadeIn {
