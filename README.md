@@ -1,7 +1,12 @@
-# NanoFlow
+<div align="center"><img src="NanoImg/logo_g.png" alt="Logo" width="30%"></div>
 
-> 基于 HTML5 Canvas 的高交互粒子生成器
-> 文字/图片粒子化 · 多模式图像处理 · 自定义颜色 · 实时交互动画 · 响应式设计 · 一键导出
+<p align="center">
+<b>基于 HTML5 Canvas 的高交互粒子生成器</b>
+</p>
+
+<p align="center">
+<b>文字/图片粒子化 · 多模式图像处理 · 自定义颜色 · 实时交互动画 · 响应式设计 · 一键导出</b>
+</p>
 
 ---
 
@@ -15,6 +20,8 @@
 - **响应式与可访问性**：桌面/移动端自适应，基础无障碍支持。
 
 ---
+
+![截图](NanoImg/img.png)
 
 ## 🚀 快速开始
 
