@@ -108,6 +108,10 @@ html.dark-mode {
     box-sizing: border-box;
 }
 
+html {
+    font-size: 12px;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
@@ -119,7 +123,7 @@ canvas,
 #canvas1 {
     background: var(--bg-color);
     position: absolute;
-    top: 56px;
+    top: 40px;
     left: 0;
     z-index: 1;
 }
@@ -128,13 +132,13 @@ canvas,
 .navbar {
     width: auto;
     min-width: 100vw;
-    height: 56px;
+    height: 48px;
     background: var(--bg-color);
     color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
+    padding: 0 20px;
     position: fixed;
     top: 0;
     left: 0;
@@ -145,7 +149,7 @@ canvas,
 }
 
 .nav-logo {
-    height: 55px;
+    height: 40px;
     vertical-align: middle;
     transition: filter 0.2s;
 }
@@ -171,13 +175,13 @@ html.dark-mode .nav-logo {
 }
 
 .nav-buttons button {
-    margin-left: 16px;
-    padding: 8px 18px;
+    margin-left: 12px;
+    padding: 0 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 3px;
     background: var(--button-primary-bg);
     color: var(--button-text);
-    font-size: 1rem;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: background 0.2s;
     white-space: nowrap;
@@ -258,7 +262,7 @@ html.dark-mode .nav-logo {
     background: var(--input-bg);
     color: var(--text-primary);
     font-size: 1rem;
-    padding: 12px 16px;
+    padding: 8px 16px;
     text-align: left;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -294,6 +298,7 @@ html.dark-mode .nav-logo {
     order: 1;
     min-width: 60px;
     flex-shrink: 0;
+    font-size: 1rem;
 }
 
 .mobile-menu .slider-item input[type="range"] {
@@ -301,13 +306,9 @@ html.dark-mode .nav-logo {
     margin: 0 !important;
     max-width: none !important;
     order: 2;
-    height: 6px;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 3px;
-    background: var(--border-color);
 }
 
+.slider-control-group input[type="range"]::-webkit-slider-thumb,
 .mobile-menu .slider-item input[type="range"]::-webkit-slider-thumb {
     width: 18px;
     height: 18px;
@@ -316,6 +317,7 @@ html.dark-mode .nav-logo {
     background: var(--button-primary-bg);
     cursor: pointer;
     border: 2px solid var(--border-color);
+    margin-top: 0px;
 }
 
 
@@ -328,6 +330,7 @@ html.dark-mode .nav-logo {
     margin-left: 8px !important;
     order: 3;
     flex-shrink: 0;
+    font-size: 1.2rem;
 }
 
 .mobile-menu #themeColorPickerMobile {
@@ -367,13 +370,14 @@ html.dark-mode .nav-logo {
 .mobile-menu #particleSizeToggleBtnMobile {
     margin-left: 10px;
     width: auto;
-    padding: 6px 12px;
+    padding: 4px 10px;
     text-align: center;
     text-wrap: nowrap;
     background: var(--button-primary-bg);
     color: var(--button-text);
+    border:none;
     border-radius: 6px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 500;
     transition: background 0.2s ease;
 }
@@ -423,7 +427,7 @@ html.dark-mode .nav-logo {
 }
 
 .theme-color-label {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--text-primary);
 }
 
@@ -446,45 +450,55 @@ html.dark-mode .nav-logo {
     max-width: none !important;
 }
 
+.zoom-label,
+.slider-label {
+    font-size: 0.9rem;
+}
+
+/* 移动端菜单中 slider/zoom 标签统一为更大的字号 */
+.mobile-menu .slider-label,
+.mobile-menu .zoom-label {
+    font-size: 1rem;
+}
+
 .slider-control-group .slider-value,
 .mobile-menu .slider-value {
-    min-width: 32px;
+    min-width: 28px;
     text-align: left;
     font-variant-numeric: tabular-nums;
     margin-left: 2px;
     color: var(--text-secondary);
-    font-size: 0.98em;
+    font-size: 0.75em;
     transition: color 0.2s;
 }
 
 .slider-control-group input[type="range"],
 .mobile-menu input[type="range"] {
     flex: 1 1 80px;
-    max-width: 104px;
+    max-width: 80px;
+    height: 5px;
 }
 
 h3 {
-    margin: 0 0 12px 0;
-    font-size: 1rem;
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
     color: var(--text-primary);
 }
-
-
 
 .theme-toggle-btn,
 .help-btn {
     background: none;
     border: none;
     color: var(--text-primary);
-    font-size: 2rem;
+    font-size: 1.4rem;
     cursor: pointer;
     margin-right: 5px;
-    margin-top: 6px;
+    margin-top: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 22px;
+    height: 22px;
 }
 
 .help-btn {
@@ -496,8 +510,8 @@ h3 {
 }
 
 .theme-toggle-btn svg {
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
 }
 
 .theme-toggle-btn .moon-icon {
@@ -555,10 +569,10 @@ html.dark-mode input[type="range"] {
 .modal-content {
     background: var(--modal-content-bg);
     color: var(--text-primary);
-    padding: 2px 28px 28px;
+    padding: 4px 12px 12px;
     border-radius: 16px;
-    min-width: 320px;
-    max-width: 92vw;
+    min-width: 220px;
+    max-width: 34vw;
     box-shadow: 0 8px 32px var(--shadow-color);
     position: relative;
     display: flex;
@@ -567,11 +581,16 @@ html.dark-mode input[type="range"] {
     animation: popIn 0.25s;
 }
 
+#helpModal .modal-content {
+    max-height: 72vh;
+    overflow-y: auto;
+}
+
 p {
     text-align: center;
-    margin: 20px 0;
-    font-size: large;
-    font-weight: 1230;
+    margin: 16px 0;
+    font-size: 0.8rem;
+    font-weight: 500;
 }
 
 
@@ -585,6 +604,7 @@ p {
     transition: transform 0.4s, color 0.3s;
     transform-origin: 50% 60%;
     display: inline-block;
+    user-select: none;
 }
 
 .close:hover {
@@ -615,7 +635,7 @@ p {
     font-size: 1.1rem;
     background-color: var(--input-bg);
     color: var(--text-primary);
-    border: 1.5px solid var(--border-color);
+    border: 1.2px solid var(--border-color);
     border-radius: 6px;
     outline: none;
     resize: vertical;
@@ -624,7 +644,7 @@ p {
 }
 
 #textInput:focus {
-    border: 1.5px solid var(--text-secondary);
+    border: 1.2px solid var(--text-secondary);
 }
 
 .char-count {
@@ -638,10 +658,10 @@ p {
 
 select {
     margin-top: 6px;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    font-size: 16px;
+    font-size: 0.9rem;
     background-color: var(--input-bg);
     color: var(--text-primary);
     width: 100%;
@@ -660,8 +680,8 @@ select {
 
 
 select option {
-    padding: 10px 12px;
-    font-size: 16px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
     background-color: var(--input-bg);
     color: var(--text-primary);
     border: none;
@@ -672,7 +692,7 @@ select optgroup {
     color: var(--text-secondary);
     padding: 10px 12px;
     background-color: var(--option-hover);
-    font-size: 14px;
+    font-size: 0.85rem;
 }
 
 select optgroup option {
@@ -694,8 +714,8 @@ select optgroup option {
 
 #imgPreview .preview-stack {
     position: relative;
-    width: 300px;
-    height: 220px;
+    width: 220px;
+    height: 120px;
     display: block;
 }
 
@@ -717,9 +737,8 @@ select optgroup option {
 }
 
 #imgModeTip {
-    
     margin: auto;
-    font-size: 17px;
+    font-size: 0.95rem;
     color: var(--text-primary);
     text-align: center;
     margin-top: 10px;
@@ -729,14 +748,14 @@ select optgroup option {
     display: inline-block;
     width: 50%;
     height: auto;
-    line-height: 40px;
+    line-height: 30px;
     padding: 0;
     margin-top: 25px;
     margin-bottom: 8px;
     color: var(--button-primary-bg);
-    border: var(--button-primary-bg) solid 2px;
+    border: var(--button-primary-bg) solid 1.5px;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: 0.9rem;
     cursor: pointer;
     text-align: center;
     transition: background-color 0.2s, color 0.2s;
@@ -760,9 +779,9 @@ select optgroup option {
 #exportBtnMobile,
 #mouseEffectBtn,
 #particleSizeToggleBtn {
-    height: 28px;
-    line-height: 28px;
-    padding: 0 12px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 8px;
     font-size: 0.9rem;
     background-color: var(--button-primary-bg);
     color: var(--button-text);
@@ -776,6 +795,7 @@ select optgroup option {
 
 .modal-gen-btn {
     width: auto;
+    height: 30px;
     min-width: 100px;
     max-width: 300px;
     margin: 18px auto 0 auto;
@@ -794,7 +814,8 @@ select optgroup option {
 #imgGenBtnMobile:hover,
 #exportBtn:hover,
 #exportBtnMobile:hover,
-#mouseEffectBtn:hover {
+#mouseEffectBtn:hover,
+#particleSizeToggleBtn:hover {
     background-color: var(--button-hover-bg);
 }
 
@@ -804,9 +825,7 @@ select optgroup option {
 
 
 .help-content {
-    max-height: 70vh;
-    overflow-y: auto;
-    width: 100%;
+    width: 90%;
     padding-right: 4px;
     box-sizing: border-box;
 }
@@ -938,12 +957,12 @@ select optgroup option {
 .export-options {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 16px;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 .export-option {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background: var(--input-bg);
@@ -952,10 +971,10 @@ select optgroup option {
 
 
 .export-option p {
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 0.85rem;
+    line-height: 1.35;
 }
 
 .export-btn {
@@ -1017,7 +1036,7 @@ select optgroup option {
     margin-bottom: 16px;
     padding: 12px;
     background: transparent;
-    border: 1.5px solid var(--button-primary-bg);
+    border: 1.2px solid var(--button-primary-bg);
     border-radius: 6px;
 }
 
@@ -1180,8 +1199,8 @@ select optgroup option {
 }
 
 #colorCirclePreview {
-    width: 35px;
-    height: 35px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     border: 2px solid var(--border-color);
     cursor: pointer;
@@ -1238,19 +1257,22 @@ select optgroup option {
     display: flex;
     flex-wrap: wrap;
     border-radius: 0.5rem;
-    border: 1.5px solid var(--button-primary-bg);
+    border: 1.2px solid var(--button-primary-bg);
     background-color: var(--input-bg, #eee);
     box-sizing: border-box;
     box-shadow: 0 0 0px 1px var(--shadow-color);
     padding: 0.25rem;
-    font-size: 15px;
-    margin: 16px 0;
+    font-size: 13px;
+    margin: 10px 0;
     gap: 0;
 }
 
 .radio-inputs.img-bw-group .radio {
     flex: 1 1 auto;
     text-align: center;
+    border: none;
+    background: none;
+    padding: 0;
 }
 
 .radio-inputs.img-bw-group .radio input {
@@ -1262,26 +1284,25 @@ select optgroup option {
     cursor: pointer;
     align-items: center;
     justify-content: center;
-    border-radius: 0.5rem;
-    padding: 7px 0;
+    border-radius: 0.4rem;
+    padding: 4px 0;
     color: var(--text-primary, #222);
     background: none;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
-    border: 2px solid transparent;
+    border: 1px solid transparent;
 }
 
 .radio-inputs.img-bw-group .radio input:checked+.name {
     background-color: var(--modal-content-bg, #fff);
     font-weight: 600;
-    box-shadow: 0 2px 8px var(--shadow-color-secondary);
-    border: 2px solid var(--button-secondary-bg);
+    box-shadow: 0 1px 4px var(--shadow-color-secondary);
+    border: 1px solid var(--button-secondary-bg);
     animation: select 0.3s ease;
 }
 
 .radio-inputs.img-bw-group .radio:hover .name {
     background-color: var(--option-hover);
-    border: 2px solid var(--option-hover);
 }
 
 .font-size-group {
@@ -1295,9 +1316,9 @@ select optgroup option {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 1040px) {
     .navbar {
-        padding: 0 5px;
+        padding: 0 20px;
     }
 
     .nav-buttons {
@@ -1309,8 +1330,8 @@ select optgroup option {
     }
 
     .nav-center {
-        justify-content: space-between;
-        gap: 0;
+        justify-content: center;
+        gap: 20px;
     }
 
     .canvas-zoom-group {
@@ -1360,43 +1381,42 @@ select optgroup option {
 
     
     .modal {
-        padding: 10px;
+        padding: 6px;
     }
 
     .modal-content {
-        width: 95%;
-        max-width: 95%;
-        max-height: 90vh;
+        width: auto;
+        max-width: 90vw;
+        max-height: 85vh;
         overflow-y: auto;
-        padding: 20px;
-        margin: 20px auto;
+        padding: 6px 10px 10px;
+        margin: 12px auto;
     }
 
-    
+    /* 移动端模态标题/正文略大于 PC，但保持同一风格 */
     .modal-content h2 {
-        font-size: 1.5rem;
-        margin-bottom: 15px;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
     }
 
     .modal-content p {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         line-height: 1.4;
     }
 
-    
     select, input[type="text"], input[type="range"], textarea {
-        font-size: 16px; 
+        font-size: 14px; 
     }
 
     #textInput {
         min-height: 80px;
-        font-size: 16px;
+        font-size: 14px;
     }
     
     .modal-gen-btn, .export-btn {
-        padding: 12px 20px;
-        font-size: 16px;
-        min-height: 44px; 
+        padding: 8px 14px;
+        font-size: 0.9rem;
+        min-height: 36px; 
     }
 
     
@@ -1427,25 +1447,6 @@ select optgroup option {
         margin-top: 2px;
     }
 
-    .radio-inputs.img-bw-group {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .radio-inputs.img-bw-group .radio {
-        padding: 12px;
-        border-radius: 8px;
-        border: 2px solid var(--border-color);
-    }
-
-    .export-options {
-        gap: 20px;
-    }
-
-    .export-option {
-        padding: 20px;
-        border-radius: 12px;
-    }
 
     .gradient-options {
         gap: 12px;
@@ -1601,24 +1602,7 @@ select optgroup option {
         font-size: 0.9rem;
     }
 
-    .txt-export-inputs {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-    }
-
-    .txt-export-inputs input {
-        width: 60px;
-        height: 44px;
-        font-size: 18px;
-        text-align: center;
-    }
-
-    .txt-export-inputs label {
-        font-size: 0.9rem;
-        margin-top: 5px;
-    }
+    /* 导出模态框：移动端不再单独改布局，完全沿用 PC 样式 */
 
     .image-quality-option {
         flex-direction: column;
@@ -1671,7 +1655,6 @@ select optgroup option {
 
     
     .modal-content {
-        padding: 20px;
         max-height: 85vh;
         overflow-y: auto;
     }
@@ -1700,42 +1683,6 @@ select optgroup option {
         margin-bottom: 8px;
     }
 
-    .radio {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center;
-        gap: 2px;
-        padding: 4px 6px !important;
-        margin: 0 !important;
-        background: var(--input-bg) !important;
-        border: 1px solid var(--border-color) !important;
-        border-radius: 4px !important;
-        font-size: 0.85rem;
-        min-width: 0;
-        flex-shrink: 1;
-    }
-
-    .radio input[type="radio"] {
-        margin: 0 2px 0 0;
-        width: auto;
-        height: auto;
-    }
-
-    .radio .name {
-        font-size: 0.85rem;
-        white-space: nowrap;
-        color: var(--text-primary);
-    }
-
-    
-    .img-bw-group {
-        gap: 6px !important;
-    }
-
-    .img-bw-group .radio {
-        padding: 6px 8px !important;
-        font-size: 0.9rem;
-    }
 }
 
 

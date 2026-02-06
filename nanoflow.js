@@ -21,7 +21,7 @@ window.addEventListener('load', function () {
     window.addEventListener('resize', resizeCanvasAndCenter);
     // 默认参数
     const DEFAULT_DENSITY = 6;
-    const DEFAULT_SCALE = 2;
+    const DEFAULT_SCALE = 1.4;
     const DEFAULT_ELASTICITY = 50;
     const DEFAULT_FORCE = 40;
     const DEFAULT_MONO_THRESHOLD = 170;
